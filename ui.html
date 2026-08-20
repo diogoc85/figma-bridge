@@ -21,8 +21,7 @@
                     }
                 });
             }
-        } catch (e) { }
-        setTimeout(poll, POLL_INTERVAL);
+        } catch (e) { console.error("Poll error:", e); }
     }
 
     poll();
