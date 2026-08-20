@@ -7,13 +7,11 @@ app.use(express.json());
 const queue = [];
 const results = new Map();
 
-// GPT envia comando aqui
 app.post("/figma/:action", (req, res) => {
     const commandId = randomUUID();
     const cmd = { ...req.body, type: req.params.action, commandId };
     queue.push(cmd);
 
-    // aguarda resultado por até 30s
     const start = Date.now();
     const check = setInterval(() => {
         if (results.has(commandId)) {
@@ -27,7 +25,6 @@ app.post("/figma/:action", (req, res) => {
     }, 300);
 });
 
-// Plugin consome fila
 app.get("/commands/next", (req, res) => {
     if (queue.length > 0) {
         res.json(queue.shift());
@@ -36,7 +33,6 @@ app.get("/commands/next", (req, res) => {
     }
 });
 
-// Plugin devolve resultado
 app.post("/commands/:id/result", (req, res) => {
     results.set(req.params.id, req.body);
     res.json({ ok: true });
