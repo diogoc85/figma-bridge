@@ -1,0 +1,29 @@
+<script>
+  const SERVER = "https://SEU-SERVIDOR.com"; // troque pela URL do seu servidor
+  const POLL_INTERVAL = 2000;
+
+  async function poll() {
+    try {
+      const res = await fetch(`${SERVER}/commands/next`);
+      if (res.status === 200) {
+        const cmd = await res.json();
+        window.onmessage = null;
+        parent.postMessage({ pluginMessage: cmd }, "*");
+
+        window.addEventListener("message", async (event) => {
+          const msg = event.data.pluginMessage;
+          if (msg?.commandId === cmd.commandId) {
+            await fetch(`${SERVER}/commands/${cmd.commandId}/result`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(msg)
+            });
+          }
+        });
+      }
+    } catch (e) {}
+    setTimeout(poll, POLL_INTERVAL);
+  }
+
+  poll();
+</script>
