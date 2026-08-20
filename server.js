@@ -12,6 +12,7 @@ app.use((req, res, next) => {
     next();
 });
 
+
 const queue = [];
 const results = new Map();
 
