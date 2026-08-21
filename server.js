@@ -23,6 +23,7 @@ app.post("/figma/:action", (req, res) => {
     const commandId = randomUUID();
     const cmd = { ...req.body, type: req.params.action, commandId };
     queue.push(cmd);
+    console.log("Comando enfileirado:", cmd.type, commandId);
 
     const start = Date.now();
     const check = setInterval(() => {
@@ -30,7 +31,7 @@ app.post("/figma/:action", (req, res) => {
             clearInterval(check);
             res.json(results.get(commandId));
             results.delete(commandId);
-        } else if (Date.now() - start > 30000) {
+        } else if (Date.now() - start > 60000) {
             clearInterval(check);
             res.status(504).json({ error: "Timeout — plugin não respondeu" });
         }
