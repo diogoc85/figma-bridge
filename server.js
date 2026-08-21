@@ -12,6 +12,9 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get("/privacy", (req, res) => {
+    res.send("Este servidor bridge é de uso pessoal e não coleta dados de usuários.");
+});
 
 const queue = [];
 const results = new Map();
