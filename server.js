@@ -24,18 +24,7 @@ app.post("/figma/:action", (req, res) => {
     const cmd = { ...req.body, type: req.params.action, commandId };
     queue.push(cmd);
     console.log("Comando enfileirado:", cmd.type, commandId);
-
-    const start = Date.now();
-    const check = setInterval(() => {
-        if (results.has(commandId)) {
-            clearInterval(check);
-            res.json(results.get(commandId));
-            results.delete(commandId);
-        } else if (Date.now() - start > 60000) {
-            clearInterval(check);
-            res.status(504).json({ error: "Timeout — plugin não respondeu" });
-        }
-    }, 300);
+    res.json({ success: true, commandId, status: "queued" });
 });
 
 app.get("/commands/next", (req, res) => {
